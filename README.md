@@ -1,95 +1,86 @@
-2021-12-17 > [공모전 2등]  
-```- 소아흉부 폐질환 진단 및 분류- NIA , 과학기술정보통신부, FA_solution , 고려대학교```  
- 
-[내용증명] : [공모전수상.pdf](https://github.com/Pleasant-riot/Lung-Disease-Detection/files/7764519/default.pdf)  
-![image](https://user-images.githubusercontent.com/60537388/147138310-e8096107-e371-4191-a792-998fa5c3b0ea.png)  
+# Lung Disease Detection
 
----------------------------
-![image](https://user-images.githubusercontent.com/60537388/145531886-a210ad21-c081-49f6-9b5e-de805b0f5700.png)
-## 흉부 폐질환 진단 및 분류 / Pediatric pulmonary disease detection
+본 프로젝트는 [AI 모델 개발 경진대회: 소아흉부 폐질환 진단 및 분류](http://aemasue.co.kr/layout/res/home.php?mid=40&go=pds.list&pds_type=1&start=0&num=11&s_key1=&s_que=) 경진대회에 참가하면서 시작되었습니다.  
 
-[Full_PDF] : [흉부.pdf](https://github.com/kikiru328/Lung-Disease-Detection/files/7920522/default.pdf)
+소아 흉부 X-ray 영상을 기반으로 폐질환을 분류하는 모델을 개발하였고, 이후 성능 향상과 실사용성 확보를 위해 프로젝트를 지속적으로 개선해왔습니다.
 
+다양한 이미지 데이터 처리를 통해 데이터셋을 구축하고, `CheXNet` 기반 모델에 학습하여 경진대회를 마무리, 2위를 수상하였습니다.
 
-[Demonstration_Video] : [Demonstration.zip](https://github.com/Pleasant-riot/Lung-Disease-Detection/files/7690735/Demonstration.zip)
-  
-[presentation] : https://www.youtube.com/watch?v=IC1QITRFGHg&ab_channel=CAKD3AI-SOLUTIONPROJECTS
+또한 실사용 `End-to-End` 서비스를 개발하기 위해 [RSNA 오픈 데이터셋](https://www.kaggle.com/c/rsna-pneumonia-detection-challenge)을 활용해 추가 학습을 진행하였고 `PyQt` 기반 GUI 까지 통합하여 프로젝트를 마무리했습니다.
 
-[Environment]
+<br/>
 
-	Python = 3.8.10
-	Tensorflow = 2.7.9
+## 프로젝트 배경 및 목적
 
---------------------------
-## [Summary]
-Kaggle의 RSNA Pneumonia Detection Challenge X-ray 데이터를 활용하여 흉부 폐 질환 진단 검사 프로그램을 제작했습니다.
-총 3개의 질환 분류가 가능합니다. 정상과 폐렴 그리고 진단되지 않은 x-ray 데이터입니다. 전처리이후 CheXNet 딥러닝 모델을 활용하여 3가지 진단이 분류되도록 하였습니다.
+소아 폐 질환은 조기 진단이 생명과 직결되는 고위험 질환입니다. 어린이는 폐 기능이 미성숙하고 증상 표현이 어려워 질병 악화 속도가 빨르기 때문입니다. 또한 X-ray 영상 품질과 병변의 모호함으로 의료진의 정확한 진단이 어려운 경우가 있습니다.
 
-<details>
-<summary> <b>[공모전내용 ReadMe]</b> </summary>
-<div markdown='1'>  
+이에 따라 본 프로젝트는 다음과 같은 배경을 해결하고자 경진대회에 참가, 개발하게 되었습니다.
 
-## [Competition]
-공모전의 내용은 대외비로 github에 제공할 수 없습니다.  
-간략히 설명하자면 소아의 페 질환 `6개의 질환(정상, 과다팽창, 호흡곤란증후군, 무기폐, 공기누출, 흉막삼출, 폐렴)` 을 분류하는 작업입니다. 	
+- 소아 X-ray 영상의 해상도, 움직임, 병변 작음 등으로 영상 진단이 어려움
+- 정확하고 빠른 AI 기반 진단 체계의 필요성
 
-* 제작환경
-		
-		python = 3.6
-		Tensorflow = 1.13.1
-		Keras = 2.4.2
+<br/>
 
-공모전에서 제공받은 독립적인 가상환경에서 하였기에 코드만 업로드를 하였습니다. 공모전 진행시 위와 동일한 과정을 거쳤습니다. 
-</div>  
-</details>  
+## 기술 개요
 
-## [Project process]
-EDA > Preprocess > Image to Array > Classification
+- Dataset 1: Chest X-ray 경진대회 dataset
+- Dataset 2: (추가) [RSNA Pneumonia Challenge dataset](https://www.kaggle.com/c/rsna-pneumonia-detection-challenge) 사용
+- 전처리: CLAHE, UNet
+- Model: CheXNet (DenseNet121 base)
+- GUI: PyQt5 Desktop App
 
-### [Process]
-모델의 성능을 개선하기 위해서 여러가지 전처리 과정을 거쳤습니다.
+<br/>
 
-#### 1. clahe
+### 데이터 처리 요약
 
-![image](https://user-images.githubusercontent.com/60537388/146228675-cb7026b0-b91f-437a-8e60-1f02594f094c.png)  
+- Chest X-ray 경진대회 dataset 사용
+- [RSNA Pneumonia Challenge dataset](https://www.kaggle.com/c/rsna-pneumonia-detection-challenge) 사용
+- 전체 데이터 구성 및 전처리: [자세히 보기](docs/data.md)
 
-~~~python
-clahe = cv2.createCLAHE(3.0, (20,20))
-Changed_image = clahe.apply(image)
-~~~
+<br/>
 
-	
-clahe를 적용하고 나서 폐 내부의 데이터를 조금 더 정확하게 파악할 수 있었습니다.
+### 모델 구조 요약
 
-#### 2. U-Net Segmentation
+- Base: DenseNet121 (ImageNet pretraied)
+- Output: 7-classes softmax (정상 + 6개 질환)
+- 모델 세부 구조: [자세히 보기](docs/model.md)
 
-![image](https://user-images.githubusercontent.com/60537388/146231178-4fbab414-04f6-41d3-944a-1d7b544e10b7.png)
+#### CheXNet 모델 선택 근거:
+- CheXNet은 DenseNet121 기반 모델로, 의료 영상에서 안정적인 성능을 입증한 구조.
+- DenseNet 은 매 층의 feature map을 직접 전달받아 학습이 안정적.
+- 학습 파라미터 수 대비 높은 성능, 파인튜닝에 적합한 구조라 생각, 선택
 
-U-net 모델을 적용하여 전체 X-Ray 부분에서 폐만 추출하였습니다. 추출된 데이터를 이용하여 분류 모델에 적용하였습니다.
+#### 모델 성능
 
-#### 3. Image Augmentation
-이미지 개당 추가로 4개를 증식시켜 학습시켰습니다.   
-~~~python
-import imagaug
-~~~
+- NIA Dataset Only
+    - train: F1-score 0.94
+    - test: F1-score 0.63
 
-## [Model]
-딥러닝 모델은 CheXpert에서 개발한 CheXnet을 활용하여 classification을 진행하였습니다.  
-백본은 `Densenet121`을 기반으로 진행이 되며, Densenet121이 끝나는 시점에 `CheXNet의 가중치`가 로드 되면서 ouput 층을 바꿉니다.  
-
-<cite>아래 내용은 공모전의 내용입니다. (3분류는 7 -> 3)</cite>
-![image](https://user-images.githubusercontent.com/60537388/216279911-99c243dc-1b7a-4dac-963d-2733d997db48.png)
+<br/>
 
 ## [GUI]
 제작한 모델을 가지고 PyQT5를 이용하여 GUI를 제작했습니다. 제작된 내용은 다음과 같습니다. 시연영상은 위와 동일합니다.
 ![image](https://user-images.githubusercontent.com/60537388/146233852-82d176b9-8cd0-4a7b-8d02-b76c68f89e31.png)
 
+<br/>
 
+## 기술 스택
+- python 3.10+
+- Tensorflow
+- OpenCV, PIL
+- PyQt5
+- Matplotlib, Seaborn, OpenCV
 
-## [Teammates]
+<br/>
 
-채승혜 https://github.com/SeunghyeChae
+# 수상
+- **2021 소아흉부 폐질환 진단 및 분류 2위**
+  
+[내용증명] : [공모전수상.pdf](https://github.com/Pleasant-riot/Lung-Disease-Detection/files/7764519/default.pdf)  
+![image](https://user-images.githubusercontent.com/60537388/147138310-e8096107-e371-4191-a792-998fa5c3b0ea.png)  
 
-진유훈 https://github.com/JINYUHOON
+<br/>
 
-박기범 https://github.com/KIBEOMP
+# Contribute
+본 프로젝트는 개인 연구 및 포트폴리오 목적으로 작성되었으며,
+기여(코드, 이슈, 피드백) 모두 환영합니다.
